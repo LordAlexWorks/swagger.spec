@@ -44,12 +44,7 @@
                             "title": "gateways",
                             "type": "array",
                             "items": {
-                                "type": "object",
-                                "properties": {
-                                    "name": {
-                                        "type": "string"
-                                    }
-                                }
+                                "$ref": "#/definitions/gateway"
                             }
                         }
                     },
@@ -62,6 +57,296 @@
                     }
                 }
             }
+        },
+        "/request_payments": {
+            "post": {
+                "tags": [
+                    "Payments",
+                    "Requests"
+                ],
+                "description": "Create a new Request and also a Payment for the request via the chosen Gateway.\n",
+                "parameters": [
+                    {
+                        "name": "X-User-Email",
+                        "in": "header",
+                        "description": "Email address",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-User-Token",
+                        "in": "header",
+                        "description": "Authentication token",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "request_payment[amount]",
+                        "in": "formData",
+                        "description": "Payment amount",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
+                        "name": "request_payment[description]",
+                        "in": "formData",
+                        "description": "Description about the payment (ex. Dinner)",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "request_payment[currency_code]",
+                        "in": "formData",
+                        "description": "The ISO code of the payment's currency. It must be accepted for the Jobo::Account. (ex. USD, EUR, CAD)",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "request_payment[gateway_name]",
+                        "in": "formData",
+                        "description": "The name of the payment gateway. It must be an active gateway in the Jobo::Account. (ex. stripe, paypal)",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "request_payment[notify_url]",
+                        "in": "formData",
+                        "description": "Url that the Payment object will be sent when it has any change.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "request_payment[client][first_name]",
+                        "in": "formData",
+                        "description": "The first name of the client who is making the payment",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "request_payment[client][last_name]",
+                        "in": "formData",
+                        "description": "The last name of the client who is making the payment",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "request_payment[client][email]",
+                        "in": "formData",
+                        "description": "The email address of the client who is making the payment",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "request_payment[client][phone]",
+                        "in": "formData",
+                        "description": "The phone number of the client who is making the payment",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "request_payment[billing][number]",
+                        "in": "formData",
+                        "description": "The number of the client's credit card (REQUIRED for some gateways. ex. Stripe)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "request_payment[billing][exp_month]",
+                        "in": "formData",
+                        "description": "The expiration month of the client's credit card (REQUIRED for some gateways. ex. Stripe)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "request_payment[billing][exp_year]",
+                        "in": "formData",
+                        "description": "The expiration year of the client's credit card (REQUIRED for some gateways. ex. Stripe)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "request_payment[billing][cvc]",
+                        "in": "formData",
+                        "description": "The cvc number of the client's credit card (REQUIRED for some gateways. ex. Stripe)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "request_payment[redirect_urls][return_url]",
+                        "in": "formData",
+                        "description": "The url that the client must be redirected to when a payment process that requires to leave the original web site is finished.(REQUIRED for some gateways. ex. PayPal)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "request_payment[redirect_urls][cancel_url]",
+                        "in": "formData",
+                        "description": "The url that the client must be redirected to when a payment process that requires to leave the original web site is canceled.(REQUIRED for some gateways. ex. PayPal)",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/request"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. (ex. when Gateway is not found by the gateway_name param)",
+                        "schema": {
+                            "$ref": "#/definitions/error"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity. (ex. when request params are invalid, or required param is missing, or gateway raised some error when trying to process the payment, or the credit card information is missing)",
+                        "schema": {
+                            "$ref": "#/definitions/error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "gateway": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "request": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "uuid": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "currency_code": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "Pending",
+                        "Paid",
+                        "Declined"
+                    ]
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "payments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/payment"
+                    }
+                }
+            },
+            "required": [
+                "amount",
+                "description",
+                "currency_code"
+            ]
+        },
+        "payment": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "uuid": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "Pending",
+                        "Completed",
+                        "Failed"
+                    ]
+                },
+                "metadata": {
+                    "type": "string",
+                    "description": "Anything that the requester of the API want to store. Must be in hash format('key', 'value')."
+                },
+                "notify_url": {
+                    "type": "string"
+                },
+                "gateway_transaction_id": {
+                    "type": "string",
+                    "description": "It contains the id of the transaction on the external gateway. In case of PayPal, it will contain the transaction id after the payment is completed. In case of Stripe it will contain the charge id."
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "paypal_payment_url": {
+                    "type": "string",
+                    "description": "When the payment is processed via PayPal this field contains the url to make a payment in PayPal web site."
+                },
+                "gateway": {
+                    "$ref": "#/definitions/gateway"
+                },
+                "client": {
+                    "$ref": "#/definitions/client"
+                }
+            },
+            "required": [
+                "amount"
+            ]
+        },
+        "client": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "error": {
+            "title": "error",
+            "type": "string"
         }
     }
 }
