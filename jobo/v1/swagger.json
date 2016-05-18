@@ -118,6 +118,20 @@
                         "description": "Credit card expiration year. (REQUIRED for some gateways. ex Stripe)",
                         "required": false,
                         "type": "string"
+                    },
+                    {
+                        "name": "redirect_urls[return_url]",
+                        "in": "formData",
+                        "description": "The url that the client must be redirected to when a subscription process that requires to leave the original web site is finished, completed.(REQUIRED for some gateways. ex. PayPal)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "redirect_urls[cancel_url]",
+                        "in": "formData",
+                        "description": "The url that the client must be redirected to when a subscription process that requires to leave the original web site is canceled, not completed.(REQUIRED for some gateways. ex. PayPal)",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
