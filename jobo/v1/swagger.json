@@ -14,26 +14,30 @@
     "produces": [
         "application/json"
     ],
+    "securityDefinitions": {
+        "user_email": {
+            "type": "apiKey",
+            "in": "header",
+            "name": "X-User-Email"
+        },
+        "token": {
+            "type": "apiKey",
+            "in": "header",
+            "name": "X-User-Token"
+        }
+    },
+    "security": [
+        {
+            "user_email": []
+        },
+        {
+            "token": []
+        }
+    ],
     "paths": {
         "/gateways": {
             "get": {
                 "description": "Gets a list of `active gateways` for the current account.\n",
-                "parameters": [
-                    {
-                        "name": "X-User-Email",
-                        "in": "header",
-                        "description": "Email address",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "X-User-Token",
-                        "in": "header",
-                        "description": "Authentication token",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
                 "tags": [
                     "Gateways"
                 ],
@@ -67,119 +71,105 @@
                 "description": "Create a new Request and also a Payment for the request via the chosen Gateway.\n",
                 "parameters": [
                     {
-                        "name": "X-User-Email",
-                        "in": "header",
-                        "description": "Email address",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "X-User-Token",
-                        "in": "header",
-                        "description": "Authentication token",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "request_payment[amount]",
+                        "name": "amount",
                         "in": "formData",
                         "description": "Payment amount",
                         "required": true,
                         "type": "number"
                     },
                     {
-                        "name": "request_payment[description]",
+                        "name": "description",
                         "in": "formData",
                         "description": "Description about the payment (ex. Dinner)",
                         "required": true,
                         "type": "string"
                     },
                     {
-                        "name": "request_payment[currency_code]",
+                        "name": "currency_code",
                         "in": "formData",
                         "description": "The ISO code of the payment's currency. It must be accepted for the Jobo::Account. (ex. USD, EUR, CAD)",
                         "required": true,
                         "type": "string"
                     },
                     {
-                        "name": "request_payment[gateway_name]",
+                        "name": "gateway_name",
                         "in": "formData",
                         "description": "The name of the payment gateway. It must be an active gateway in the Jobo::Account. (ex. stripe, paypal)",
                         "required": true,
                         "type": "string"
                     },
                     {
-                        "name": "request_payment[notify_url]",
+                        "name": "notify_url",
                         "in": "formData",
-                        "description": "Url that the Payment object will be sent when it has any change.",
+                        "description": "Url that the Payment object will be sent when it has any change. A POST will be made to send the updated Payment object.",
                         "required": false,
                         "type": "string"
                     },
                     {
-                        "name": "request_payment[client][first_name]",
+                        "name": "client[first_name]",
                         "in": "formData",
                         "description": "The first name of the client who is making the payment",
                         "required": false,
                         "type": "string"
                     },
                     {
-                        "name": "request_payment[client][last_name]",
+                        "name": "client[last_name]",
                         "in": "formData",
                         "description": "The last name of the client who is making the payment",
                         "required": false,
                         "type": "string"
                     },
                     {
-                        "name": "request_payment[client][email]",
+                        "name": "client[email]",
                         "in": "formData",
                         "description": "The email address of the client who is making the payment",
                         "required": true,
                         "type": "string"
                     },
                     {
-                        "name": "request_payment[client][phone]",
+                        "name": "client[phone]",
                         "in": "formData",
                         "description": "The phone number of the client who is making the payment",
                         "required": false,
                         "type": "string"
                     },
                     {
-                        "name": "request_payment[billing][number]",
+                        "name": "billing[number]",
                         "in": "formData",
                         "description": "The number of the client's credit card (REQUIRED for some gateways. ex. Stripe)",
                         "required": false,
                         "type": "string"
                     },
                     {
-                        "name": "request_payment[billing][exp_month]",
+                        "name": "billing[exp_month]",
                         "in": "formData",
                         "description": "The expiration month of the client's credit card (REQUIRED for some gateways. ex. Stripe)",
                         "required": false,
                         "type": "string"
                     },
                     {
-                        "name": "request_payment[billing][exp_year]",
+                        "name": "billing[exp_year]",
                         "in": "formData",
                         "description": "The expiration year of the client's credit card (REQUIRED for some gateways. ex. Stripe)",
                         "required": false,
                         "type": "string"
                     },
                     {
-                        "name": "request_payment[billing][cvc]",
+                        "name": "billing[cvc]",
                         "in": "formData",
                         "description": "The cvc number of the client's credit card (REQUIRED for some gateways. ex. Stripe)",
                         "required": false,
                         "type": "string"
                     },
                     {
-                        "name": "request_payment[redirect_urls][return_url]",
+                        "name": "redirect_urls[return_url]",
                         "in": "formData",
                         "description": "The url that the client must be redirected to when a payment process that requires to leave the original web site is finished.(REQUIRED for some gateways. ex. PayPal)",
                         "required": false,
                         "type": "string"
                     },
                     {
-                        "name": "request_payment[redirect_urls][cancel_url]",
+                        "name": "redirect_urls[cancel_url]",
                         "in": "formData",
                         "description": "The url that the client must be redirected to when a payment process that requires to leave the original web site is canceled.(REQUIRED for some gateways. ex. PayPal)",
                         "required": false,
