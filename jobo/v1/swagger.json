@@ -20,7 +20,7 @@
             "in": "header",
             "name": "X-User-Email"
         },
-        "token": {
+        "api_token": {
             "type": "apiKey",
             "in": "header",
             "name": "X-User-Token"
@@ -31,10 +31,123 @@
             "user_email": []
         },
         {
-            "token": []
+            "api_token": []
         }
     ],
     "paths": {
+        "/subscriptions": {
+            "post": {
+                "description": "Create a new subscription to a plan.\n",
+                "tags": [
+                    "Subscriptions"
+                ],
+                "parameters": [
+                    {
+                        "name": "metadata",
+                        "in": "formData",
+                        "type": "string",
+                        "description": "Anything that the requester of the API want to store. Must be in hash format('key', 'value').",
+                        "required": false
+                    },
+                    {
+                        "name": "plan_name",
+                        "in": "formData",
+                        "description": "Plan name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "gateway_name",
+                        "in": "formData",
+                        "description": "Gateway used by the subscription. (Ex. paypal, stripe)",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "client[first_name]",
+                        "in": "formData",
+                        "description": "Client first name. (subscriber)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "client[last_name]",
+                        "in": "formData",
+                        "description": "Client last name. (subscriber)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "client[email]",
+                        "in": "formData",
+                        "description": "Client email address. (subscriber)",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "client[phone]",
+                        "in": "formData",
+                        "description": "Client phone number. (subscriber)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "billing[number]",
+                        "in": "formData",
+                        "description": "Credit card number. (REQUIRED for some gateways. ex Stripe)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "billing[cvc]",
+                        "in": "formData",
+                        "description": "Credit card cvc number. (REQUIRED for some gateways. ex Stripe)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "billing[exp_month]",
+                        "in": "formData",
+                        "description": "Credit card expiration month. (REQUIRED for some gateways. ex Stripe)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "billing[exp_year]",
+                        "in": "formData",
+                        "description": "Credit card expiration year. (REQUIRED for some gateways. ex Stripe)",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/subscription"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. (ex. when Gateway is not found by the gateway_name param)",
+                        "schema": {
+                            "$ref": "#/definitions/error"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity. (ex. when post params are invalid, or required param is missing, or gateway raised some error when processing, or the credit card information is missing)",
+                        "schema": {
+                            "$ref": "#/definitions/error"
+                        }
+                    }
+                }
+            }
+        },
         "/gateways": {
             "get": {
                 "description": "Gets a list of `active gateways` for the current account.\n",
@@ -330,6 +443,83 @@
                     "type": "string"
                 },
                 "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "subscription": {
+            "type": "object",
+            "required": [
+                "client",
+                "gateway",
+                "plan"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "uuid": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "metadata": {
+                    "type": "string",
+                    "description": "Anything that the requester of the API want to store. Must be in hash format('key', 'value')."
+                },
+                "paypal_preapproval_url": {
+                    "type": "string",
+                    "description": "Url to complete the subscription via PayPal."
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "gateway": {
+                    "$ref": "#/definitions/gateway"
+                },
+                "client": {
+                    "$ref": "#/definitions/client"
+                },
+                "plan": {
+                    "$ref": "#/definitions/plan"
+                }
+            }
+        },
+        "plan": {
+            "type": "object",
+            "required": [
+                "name",
+                "amount",
+                "interval",
+                "currency_code"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "uuid": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "interval": {
+                    "type": "string"
+                },
+                "currency_code": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "updated_at": {
                     "type": "string"
                 }
             }
