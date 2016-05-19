@@ -64,6 +64,13 @@
                         "type": "string"
                     },
                     {
+                        "name": "notify_url",
+                        "in": "formData",
+                        "description": "Url that the Subscription object will be sent when it has any change. A POST will be made to send the updated Subscription object.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "client[first_name]",
                         "in": "formData",
                         "description": "Client first name. (subscriber)",
@@ -476,7 +483,13 @@
                     "type": "string"
                 },
                 "status": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "Pending",
+                        "Unpaid",
+                        "Canceled",
+                        "Approved"
+                    ]
                 },
                 "metadata": {
                     "type": "string",
