@@ -53,6 +53,12 @@
                         "schema": {
                             "$ref": "#/definitions/user"
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Prohibited. Wrong scope."
                     }
                 }
             }
@@ -98,6 +104,18 @@
                         "schema": {
                             "$ref": "#/definitions/user"
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Prohibited. Wrong scope."
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity. Invalid params.",
+                        "schema": {
+                            "$ref": "#/definitions/error"
+                        }
                     }
                 }
             },
@@ -112,6 +130,18 @@
                         "description": "User updated successfuly",
                         "schema": {
                             "$ref": "#/definitions/user"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Prohibited. Wrong scope."
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity. Invalid params.",
+                        "schema": {
+                            "$ref": "#/definitions/error"
                         }
                     }
                 }
@@ -149,6 +179,10 @@
                 "username",
                 "id"
             ]
+        },
+        "error": {
+            "title": "error",
+            "type": "string"
         }
     }
 }
