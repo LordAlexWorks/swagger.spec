@@ -1,0 +1,154 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Proactives API V1",
+        "description": "Application suite - Jobo, Goyava, Papaye"
+    },
+    "host": "api.proactives.site",
+    "basePath": "/v1",
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "securityDefinitions": {
+        "users_oauth": {
+            "type": "oauth2",
+            "flow": "password",
+            "tokenUrl": "http://api.proactives.site/oauth/token",
+            "scopes": {
+                "user": "get user and update info"
+            }
+        },
+        "application_oauth": {
+            "type": "oauth2",
+            "flow": "application",
+            "tokenUrl": "http://api.proactives.site/oauth/token",
+            "scopes": {
+                "write": "create user"
+            }
+        }
+    },
+    "security": [
+        {
+            "users_oauth": [
+                "user"
+            ]
+        }
+    ],
+    "paths": {
+        "/me": {
+            "get": {
+                "summary": "User Profile",
+                "description": "Returns information about the user that has authorized with the application.",
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Profile information for a user",
+                        "schema": {
+                            "$ref": "#/definitions/user"
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "post": {
+                "summary": "Create a new User",
+                "description": "Creates a new user and returns the user profile with the access token generated",
+                "security": [
+                    {
+                        "application_oauth": [
+                            "write"
+                        ]
+                    }
+                ],
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "name": "username",
+                        "required": true,
+                        "in": "formData",
+                        "type": "string"
+                    },
+                    {
+                        "name": "email",
+                        "in": "formData",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "formData",
+                        "required": true,
+                        "type": "string",
+                        "format": "password"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User created successfuly",
+                        "schema": {
+                            "$ref": "#/definitions/user"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Update user info",
+                "description": "Update user info and returns the user profile (NOT IMPLEMENTED)",
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User updated successfuly",
+                        "schema": {
+                            "$ref": "#/definitions/user"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "user": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "access_token": {
+                    "type": "string",
+                    "description": "Access token generated for the application when the user was created."
+                },
+                "created_at": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "required": [
+                "email",
+                "username",
+                "id"
+            ]
+        }
+    }
+}
