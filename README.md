@@ -2,7 +2,7 @@
 
 All the documentation here is following the Swagger 2.0 specification (http://swagger.io/specification/) and can be open in a nice format using Swagger Editor tool (http://editor.swagger.io/#/).
 
-Availables Docs:
+Available Docs:
 - Jobo API V1
 - Guava API V1
 - Proactives API V1
