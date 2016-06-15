@@ -1,0 +1,325 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Guava API V1",
+        "description": "Proximity commerce and loyalty platform"
+    },
+    "host": "api.goyava.site",
+    "basePath": "/v1",
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "securityDefinitions": {
+        "proactives_access_token": {
+            "type": "apiKey",
+            "in": "header",
+            "name": "Proactives-User-Token",
+            "description": "Token to retrieve user information via Proactives API."
+        }
+    },
+    "security": [
+        {
+            "proactives_access_token": []
+        }
+    ],
+    "paths": {
+        "/clients": {
+            "post": {
+                "description": "Create a new client.\n",
+                "tags": [
+                    "Client"
+                ],
+                "parameters": [
+                    {
+                        "name": "proactives_access_token",
+                        "in": "formData",
+                        "type": "string",
+                        "description": "The token that confirm the user logged in and can retrieve its information from Proactives API.",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/client"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/error"
+                        }
+                    }
+                }
+            }
+        },
+        "/clients/{client_id}/activities": {
+            "post": {
+                "description": "Create a new activity (add point) to a card.\n",
+                "tags": [
+                    "Activity"
+                ],
+                "parameters": [
+                    {
+                        "name": "client_id",
+                        "in": "path",
+                        "type": "integer",
+                        "required": true
+                    },
+                    {
+                        "name": "shop_id",
+                        "in": "formData",
+                        "type": "integer",
+                        "required": true
+                    },
+                    {
+                        "name": "qrcode_id",
+                        "in": "formData",
+                        "type": "integer",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/activity"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. (ex. when Card, Shop, or Qrcode are not found)",
+                        "schema": {
+                            "$ref": "#/definitions/error"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity. (ex. when create an activity with more points than card max point)",
+                        "schema": {
+                            "$ref": "#/definitions/error"
+                        }
+                    }
+                }
+            }
+        },
+        "/clients/{client_id}/cards": {
+            "get": {
+                "description": "Get all the cards associated with a specific client.\n",
+                "tags": [
+                    "Card"
+                ],
+                "parameters": [
+                    {
+                        "name": "client_id",
+                        "in": "path",
+                        "type": "integer",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cards retrieved successfully",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/card"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clients/{client_id}/cards/{id}": {
+            "get": {
+                "description": "Get a specific card of a specific client.\n",
+                "tags": [
+                    "Card"
+                ],
+                "parameters": [
+                    {
+                        "name": "client_id",
+                        "in": "path",
+                        "type": "integer",
+                        "required": true
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "type": "integer",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Card retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/card"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. (ex. when Card is not found)",
+                        "schema": {
+                            "$ref": "#/definitions/error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "error": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer",
+                    "description": "HTTP Status"
+                }
+            }
+        },
+        "client": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "activity": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "point": {
+                    "type": "integer"
+                }
+            }
+        },
+        "card": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "point": {
+                    "type": "integer",
+                    "description": "The current total point. The sum of the point in all card activities."
+                },
+                "max_point": {
+                    "type": "integer",
+                    "description": "Maximum points the card can have."
+                },
+                "locked": {
+                    "type": "boolean",
+                    "description": "If true the card reached the maximum points."
+                },
+                "created_at": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "shop": {
+                    "$ref": "#/definitions/shop"
+                },
+                "activities": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/activity"
+                    }
+                }
+            }
+        },
+        "shop": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "website": {
+                    "type": "string"
+                },
+                "maximum_point": {
+                    "type": "integer",
+                    "description": "Maximum number of points a card of this shop can have."
+                },
+                "logo": {
+                    "type": "string",
+                    "description": "The url of the image."
+                },
+                "address": {
+                    "$ref": "#/definitions/address"
+                },
+                "created_at": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "address": {
+            "type": "object",
+            "properties": {
+                "addr1": {
+                    "type": "string"
+                },
+                "addr2": {
+                    "type": "string"
+                },
+                "zipcode": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
