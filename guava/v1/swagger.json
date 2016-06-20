@@ -79,7 +79,7 @@
                         "required": true
                     },
                     {
-                        "name": "qrcode_id",
+                        "name": "stamp_id",
                         "in": "formData",
                         "type": "integer",
                         "required": true
@@ -99,7 +99,7 @@
                         }
                     },
                     "404": {
-                        "description": "Not Found. (ex. when Card, Shop, or Qrcode are not found)",
+                        "description": "Not Found. (ex. when Card, Shop, or Stamp are not found)",
                         "schema": {
                             "$ref": "#/definitions/error"
                         }
