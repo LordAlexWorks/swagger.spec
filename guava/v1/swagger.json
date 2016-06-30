@@ -30,7 +30,7 @@
     "paths": {
         "/clients": {
             "post": {
-                "description": "Create a new client.\n",
+                "description": "Create a new client. If the User already has a client, the api returns this.\n",
                 "tags": [
                     "Client"
                 ],
@@ -135,6 +135,49 @@
                             "items": {
                                 "$ref": "#/definitions/card"
                             }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new card of a specific shop for the client.\n",
+                "parameters": [
+                    {
+                        "name": "client_id",
+                        "in": "path",
+                        "type": "integer",
+                        "required": true
+                    },
+                    {
+                        "name": "shop_id",
+                        "in": "formData",
+                        "type": "integer",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Card created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/card"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. (ex. when Shop is not found)",
+                        "schema": {
+                            "$ref": "#/definitions/error"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity. (ex. when Shop has already a card unlocked for the client)",
+                        "schema": {
+                            "$ref": "#/definitions/error"
                         }
                     }
                 }
