@@ -140,7 +140,7 @@
                 }
             },
             "post": {
-                "description": "Create a new card of a specific shop for the client.\n",
+                "description": "Create a new card of a specific shop for the client. If the client already have an unlocked card for this shop, this card will be returned.\n",
                 "parameters": [
                     {
                         "name": "client_id",
