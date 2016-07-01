@@ -249,10 +249,12 @@
                     "type": "integer"
                 },
                 "created_at": {
-                    "type": "string"
+                    "type": "integer",
+                    "description": "Unix timestamp format"
                 },
                 "updated_at": {
-                    "type": "string"
+                    "type": "integer",
+                    "description": "Unix timestamp format"
                 }
             }
         },
@@ -263,8 +265,8 @@
                     "type": "integer"
                 },
                 "created_at": {
-                    "type": "string",
-                    "format": "date-time"
+                    "type": "integer",
+                    "description": "Unix timestamp format"
                 },
                 "point": {
                     "type": "integer"
@@ -290,12 +292,12 @@
                     "description": "If true the card reached the maximum points."
                 },
                 "created_at": {
-                    "type": "string",
-                    "format": "date-time"
+                    "type": "integer",
+                    "description": "Unix timestamp format"
                 },
                 "updated_at": {
-                    "type": "string",
-                    "format": "date-time"
+                    "type": "integer",
+                    "description": "Unix timestamp format"
                 },
                 "shop": {
                     "$ref": "#/definitions/shop"
@@ -332,12 +334,12 @@
                     "$ref": "#/definitions/address"
                 },
                 "created_at": {
-                    "type": "string",
-                    "format": "date-time"
+                    "type": "integer",
+                    "description": "Unix timestamp format"
                 },
                 "updated_at": {
-                    "type": "string",
-                    "format": "date-time"
+                    "type": "integer",
+                    "description": "Unix timestamp format"
                 }
             }
         },
